@@ -1,86 +1,105 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
 
-public class StudentRecordManagement {
+public class Studentdetails {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        StudentRecords records = new StudentRecords();
+        List<RecordsStudents> students = new ArrayList<>();
+        boolean exit = false;
 
-        // Sample data - Add students
-        Student student1 = new Student("John Doe", 101, new double[]{95, 87, 92});
-        Student student2 = new Student("Jane Smith", 102, new double[]{88, 76, 90});
-        records.addStudent(student1);
-        records.addStudent(student2);
-
-        while (true) {
-            System.out.println("Options:");
-            System.out.println("1. Display all students");
-            System.out.println("2. Display student information by ID");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice: ");
+        do {
+            System.out.println("""
+                    \nStudent Record Management System
+                    1. Add Student
+                    2. View Student Records
+                    3. Update Student Grade
+                    4. Exit
+                    Enter your choice:
+                        """);
 
             int choice = scanner.nextInt();
+
             switch (choice) {
                 case 1:
-                    records.displayAllStudents();
-                    break;
-                case 2:
+                    // Add Student
                     System.out.print("Enter student ID: ");
                     int id = scanner.nextInt();
-                    records.displayStudentInformation(id);
+                    scanner.nextLine();
+                    System.out.print("Enter student name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Grade can be A,B,C,E,F \nEnter student grade: ");
+                    String grade = scanner.next();
+                    students.add(new RecordsStudents(id, name, grade));
                     break;
+
+                case 2:
+                    // View Student Records
+                    System.out.println("Student Records:");
+                    for (RecordsStudents student : students) {
+                        System.out.println(student);
+                    }
+                    break;
+
                 case 3:
-                    System.out.println("Goodbye!");
-                    scanner.close();
-                    System.exit(0);
+                    // Update Student Grade
+                    System.out.print("Enter student ID to update grade: ");
+                    int updateId = scanner.nextInt();
+                    System.out.print("Enter new grade: ");
+                    String newGrade = scanner.next();
+
+                    for (RecordsStudents student : students) {
+                        if (student.getId() == updateId) {
+                            student.setGrade(newGrade);
+                            System.out.println("Grade updated successfully.");
+                            break;
+                        }
+                    }
                     break;
+
+                case 4:
+                    System.out.println("Exiting the program.");
+                    exit = true;
+                    break;
+
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Invalid choice. Please enter a valid option.");
             }
-        }
+        } while (!exit);
+
+        scanner.close();
     }
 }
 
-class StudentRecords {
-    private ArrayList<Student> students;
+class RecordsStudents {
+    private int id;
+    private String name;
+    private String grade;
 
-    public StudentRecords() {
-        students = new ArrayList<>();
+    public RecordsStudents(int id, String name, String grade) {
+        this.id = id;
+        this.name = name;
+        this.grade = grade;
     }
 
-    public void addStudent(Student student) {
-        students.add(student);
+    public int getId() {
+        return id;
     }
 
-    public void displayStudentInformation(int id) {
-        for (Student student : students) {
-            if (student.getId() == id) {
-                System.out.println("Name: " + student.getName());
-                System.out.println("ID: " + student.getId());
-                System.out.println("Grades: " + arrayToString(student.getGrades()));
-                System.out.println("Average Grade: " + student.calculateAverageGrade());
-                return;
-            }
-        }
-        System.out.println("Student with ID " + id + " not found.");
+    public String getName() {
+        return name;
     }
 
-    public void displayAllStudents() {
-        for (Student student : students) {
-            System.out.println("Name: " + student.getName());
-            System.out.println("ID: " + student.getId());
-            System.out.println("Grades: " + arrayToString(student.getGrades()));
-            System.out.println("Average Grade: " + student.calculateAverageGrade());
-            System.out.println();
-        }
+    public String getGrade() {
+        return grade;
     }
 
-    private String arrayToString(double[] array) {
-        StringBuilder sb = new StringBuilder();
-        for (double value : array) {
-            sb.append(value).append(" ");
-        }
-        return sb.toString().trim();
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + ",\n Name: " + name + ",\n Grade: " + grade;
     }
 }
-
